@@ -58,6 +58,18 @@ def create_app_say_hello_query_with_default() -> FastAPI:
         }
     return app
 
+# path parameter
+# uvicorn app.main:create_app_query_parameter --factory --reload
+# http://127.0.0.1:8000/users/15
+def create_app_query_parameter() -> FastAPI:
+    app = FastAPI()
+    @app.get("/users/{user_id}")
+    def root(user_id: int):
+        return {
+            "user_id": user_id
+        }
+    return app
+
 # Sau này chạy
 # uvicorn app.main:app
 
