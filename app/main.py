@@ -47,6 +47,16 @@ def create_app_say_hello_query_parameter() -> FastAPI:
         }
     return app
 
+# uvicorn app.main:create_app_say_hello_query_with_default --factory --reload
+# http://127.0.0.1:8000/hello?name=Tuan%20Anh
+def create_app_say_hello_query_with_default() -> FastAPI:
+    app = FastAPI()
+    @app.get("/hello")
+    def root(name: str = "World"):
+        return {
+            "message": f"Hello {name}"
+        }
+    return app
 
 # Sau này chạy
 # uvicorn app.main:app
