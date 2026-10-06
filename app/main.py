@@ -1,4 +1,5 @@
-﻿from models.product import Product
+﻿from pydantic import BaseModel
+from models.product import Product
 from services import product_service
 from fastapi import FastAPI
 
@@ -84,6 +85,21 @@ def create_app_path_query_combination() -> FastAPI:
         }
 
     return app
+
+# POST method
+# uvicorn app.main:create_app_post --factory --reload
+# http://127.0.0.1:8000/docs#/default/chat_chat_post
+def create_app_post() -> FastAPI:
+    app = FastAPI()
+    @app.post("/chat")
+    def chat(request: ChatRequest):
+        return {
+            "message": f"You just chat: {request.text}"
+        }
+    return app
+
+class ChatRequest(BaseModel):
+    text: str
 
 # Sau này chạy
 # uvicorn app.main:app
