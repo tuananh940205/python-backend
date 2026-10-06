@@ -61,6 +61,7 @@ def create_app_say_hello_query_with_default() -> FastAPI:
 # path parameter
 # uvicorn app.main:create_app_query_parameter --factory --reload
 # http://127.0.0.1:8000/users/15
+# Tự validate parameter type
 def create_app_query_parameter() -> FastAPI:
     app = FastAPI()
     @app.get("/users/{user_id}")
@@ -68,6 +69,20 @@ def create_app_query_parameter() -> FastAPI:
         return {
             "user_id": user_id
         }
+    return app
+
+# Path + Query kết hợp
+# uvicorn app.main:create_app_path_query_combination --factory --reload
+# http://127.0.0.1:8000/users/15?verbose=true
+def create_app_path_query_combination() -> FastAPI:
+    app = FastAPI()
+    @app.get("/users/{user_id}")
+    def get_user(user_id: int, verbose: bool = False):
+        return {
+            "user_id": user_id,
+            "verbose": verbose
+        }
+
     return app
 
 # Sau này chạy
