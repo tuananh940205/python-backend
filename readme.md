@@ -4,3 +4,8 @@ Trong `main.py` phải sử dụng
 Chạy project bằng
 
     if __name__ == "__main__":
+
+Activate trên window
+```
+.venv\Scripts\activate
+```

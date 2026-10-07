@@ -101,6 +101,22 @@ def create_app_post() -> FastAPI:
 class ChatRequest(BaseModel):
     text: str
 
+# Chatbot
+class ChatRequest_2(BaseModel):
+    message: str
+    conversation_id: int
+# uvicorn app.main:create_app_post_2 --factory --reload
+# http://127.0.0.1:8000/docs#/default/chat_chat_post
+def create_app_post_2() -> FastAPI:
+    app = FastAPI()
+    @app.post("/chat")
+    def chat(request: ChatRequest_2):
+        return {
+            "message": f"{request.message} là",
+            "conversation_id": request.conversation_id
+        }
+    return app
+
 # Sau này chạy
 # uvicorn app.main:app
 
