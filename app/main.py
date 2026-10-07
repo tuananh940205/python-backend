@@ -117,6 +117,26 @@ def create_app_post_2() -> FastAPI:
         }
     return app
 
+# 21. Pydantic validation
+# Truyền sai value type sẽ trả về error
+
+# 22. Optional field
+# Truyền thiếu field sẽ được trả về field mặc định
+# 23. List trong request
+class ChatRequest3(BaseModel):
+    message: str
+    history: list[str] = []
+# uvicorn app.main:create_app_post_3 --factory --reload
+def create_app_post_3() -> FastAPI:
+    app = FastAPI()
+    @app.post("/chat")
+    def response(message: str, history: list[str]):
+        return {
+            "message": message,
+            "history": history
+        }
+    return app
+
 # Sau này chạy
 # uvicorn app.main:app
 
