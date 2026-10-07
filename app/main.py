@@ -1,7 +1,16 @@
 ﻿from pydantic import BaseModel
+
+from app.routers import users
 from models.product import Product
+# Báo lỗi cannot find reference `product_service` trong `app.services` nhưng vẫn chạy được
 from services import product_service
+# sai from ..services import product_service
 from fastapi import FastAPI
+#-----------------------------------------------------------------------------------------------------------------------
+# Python chạy Uvicorn sẽ tìm module từ thư mục gốc của project, không phải thư mục hiện tại.
+# Vì vậy, nếu bạn chạy lệnh `uvicorn app.main:app`, Python sẽ tìm module `services` trong thư mục gốc của project,
+# không phải trong thư mục `app`.
+# Do đó, bạn cần import `product_service` từ `services` thay vì từ `app.services`.
 
 
 def start() -> None:
@@ -149,6 +158,17 @@ def create_app_user() -> FastAPI:
         return {
             "name": user.name,
             "age": user.age,
+        }
+    return app
+
+# uvicorn app.main:create_app_router --factory --reload
+def create_app_router() -> FastAPI:
+    app = FastAPI()
+    app.include_router(users.router)
+    @app.get("/")
+    def response():
+        return {
+            "message": "Hello New AI engineer"
         }
     return app
 
