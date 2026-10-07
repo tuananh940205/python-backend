@@ -1,6 +1,5 @@
 ﻿from pydantic import BaseModel, Field
 
-
 # Dùng cho POST /users
 # client gửi { "name": "Tuan", "age": 30 }
 class UserCreate(BaseModel):

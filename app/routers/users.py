@@ -18,7 +18,6 @@ router = APIRouter(
     tags=["users"],
 )
 
-user_service = UserService()
 # response phải theo cấu trúc của UserResponse
 @router.post("/", response_model=UserResponse)
 def create_user(user: UserCreate, service: UserService = Depends(get_user_service)) -> UserResponse:
