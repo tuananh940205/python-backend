@@ -137,6 +137,21 @@ def create_app_post_3() -> FastAPI:
         }
     return app
 
+# Bai 4- User Api
+class UserCreate(BaseModel):
+    name: str
+    age: int
+# uvicorn app.main:create_app_user --factory --reload
+def create_app_user() -> FastAPI:
+    app = FastAPI()
+    @app.post("/users")
+    def create_user(user: UserCreate):
+        return {
+            "name": user.name,
+            "age": user.age,
+        }
+    return app
+
 # Sau này chạy
 # uvicorn app.main:app
 
