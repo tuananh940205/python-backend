@@ -1,6 +1,9 @@
-﻿from fastapi import APIRouter
+﻿from fastapi import APIRouter, Depends
 from app.schemas.user import UserResponse, UserCreate
 from app.services.user_service import UserService
+
+def get_user_service() -> UserService:
+    return UserService()
 
 # Get
 router = APIRouter(
@@ -18,9 +21,12 @@ router = APIRouter(
 user_service = UserService()
 # response phải theo cấu trúc của UserResponse
 @router.post("/", response_model=UserResponse)
-def create_user(user: UserCreate) -> UserResponse:
-    return user_service.create_user(user)
+def create_user(user: UserCreate, service: UserService = Depends(get_user_service)) -> UserResponse:
+    # return user_service.create_user(user)
+    # Gọi `get_user_uservice()` và trả kết quả vào biến `service`
+    return service.create_user(user)
 
 @router.get("/", response_model=UserResponse)
-def get_users(user_id: int) -> UserResponse:
-    return user_service.get_user(user_id)
+def get_users(user_id: int, service: UserService = Depends(get_user_service)) -> UserResponse:
+    # return user_service.get_user(user_id)
+    return service.get_user(user_id)
