@@ -1,9 +1,7 @@
 ﻿from fastapi import APIRouter, Depends
 from app.schemas.user import UserResponse, UserCreate
 from app.services.user_service import UserService
-
-def get_user_service() -> UserService:
-    return UserService()
+from app.dependencies import get_user_service
 
 # Get
 router = APIRouter(
