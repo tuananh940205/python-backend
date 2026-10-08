@@ -33,3 +33,7 @@ def get_users(user_id: int, service: UserService = Depends(get_user_service)) ->
             detail = "User not found",
         )
     return service.get_user(user_id)
+
+@router.delete("/{user_id}", status_code = status.HTTP_204_NO_CONTENT)
+def delete_user(user_id: int, service: UserService = Depends(get_user_service)):
+    service.delete_user(user_id)

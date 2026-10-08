@@ -27,3 +27,48 @@ Lộ trình
 → 7. AI Agent/tool calling
 → 8. Deploy một AI application thực tế
 ```
+
+Query Parameter và Pydantic
+```
+Path parameter
+Query parameter
+Request body
+```
+
+API backend thực tế sẽ có flow
+```
+    POST /chat
+           │
+           ▼
+    ┌──────────────────┐
+    │ Chat Router      │
+    └────────┬─────────┘
+             │
+             ▼
+    ┌──────────────────┐
+    │ Pydantic         │
+    │ ChatRequest      │
+    └────────┬─────────┘
+             │
+             ▼
+    ┌──────────────────┐
+    │ Dependency       │
+    │ Injection        │
+    └────────┬─────────┘
+             │
+             ▼
+    ┌──────────────────┐
+    │ Chat Service     │
+    └────────┬─────────┘
+             │
+             ▼
+    ┌──────────────────┐
+    │ LLM Client       │
+    └────────┬─────────┘
+             │
+             ▼
+          OpenAI/
+          Local LLM
+```
+
+Router không phải Service -> Router không chứa business logic

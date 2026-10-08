@@ -15,3 +15,5 @@ class UserService:
             name = "Tuan",
             age = 30,
         )
+    def delete_user(self, user_id: int):
+        print(f"Delete user {user_id}")
