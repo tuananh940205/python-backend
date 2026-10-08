@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter, Depends
+﻿from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.user import UserResponse, UserCreate
 from app.services.user_service import UserService
 from app.dependencies import get_user_service
@@ -26,4 +26,9 @@ def create_user(user: UserCreate, service: UserService = Depends(get_user_servic
 @router.get("/", response_model=UserResponse)
 def get_users(user_id: int, service: UserService = Depends(get_user_service)) -> UserResponse:
     # return user_service.get_user(user_id)
+    if user_id != 1:
+        raise HTTPException(
+            status_code = 404,
+            detail = "User not found",
+        )
     return service.get_user(user_id)
