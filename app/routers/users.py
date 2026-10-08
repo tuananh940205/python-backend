@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter, Depends, HTTPException
+﻿from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.user import UserResponse, UserCreate
 from app.services.user_service import UserService
 from app.dependencies import get_user_service
@@ -17,7 +17,8 @@ router = APIRouter(
 )
 
 # response phải theo cấu trúc của UserResponse
-@router.post("/", response_model=UserResponse)
+# Nếu chỉ định status code, sử dụng logic @router.post("/", response_model=UserResponse, status_code=201)
+@router.post("/", response_model=UserResponse, status_code = status.HTTP_201_CREATED)
 def create_user(user: UserCreate, service: UserService = Depends(get_user_service)) -> UserResponse:
     # return user_service.create_user(user)
     # Gọi `get_user_uservice()` và trả kết quả vào biến `service`
