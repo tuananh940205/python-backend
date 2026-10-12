@@ -2,11 +2,13 @@ Trong `main.py` phải sử dụng
 
     if __name__ == "__main__":
 Chạy project bằng
+```python
+if __name__ == "__main__":
+```
 
-    if __name__ == "__main__":
 
 Activate trên window
-```
+```sh
 .venv\Scripts\activate
 ```
 
@@ -126,3 +128,57 @@ User data
 Conversation history
 AI evaluation
 ```
+
+MCP
+```toml
+cấu hình MCP hiện đã stage tham chiếu tới file này.
+```
+
+
+
+
+## Alembic migrations (PowerShell)
+
+Set `DATABASE_URL` in the active PowerShell session, replacing the username,
+password, and database name with the values for your local PostgreSQL server.
+Do not commit the connection URL or share it if it contains a password.
+
+```powershell
+$env:DATABASE_URL = "postgresql+psycopg://<user>:<password>@localhost:5432/<database>"
+alembic revision --autogenerate -m "create users table"
+alembic upgrade head
+```
+
+The `User` SQLAlchemy model defines `id`, `name`, and a timezone-aware
+`created_at` column with a database-side current-time default. Alembic uses
+this model's metadata to generate the migration.
+
+## PostgreSQL MCP for VS Code
+
+pgAdmin 4 is a PostgreSQL client, not an MCP server. The VS Code MCP server
+connects directly to the PostgreSQL instance managed through pgAdmin.
+
+Add a `MCP_DATABASE_URL` entry to the existing, gitignored `.env` file. Use the
+same PostgreSQL host, port, database, username, and password shown in pgAdmin,
+but use the `postgresql://` scheme (not SQLAlchemy's `postgresql+psycopg://`
+scheme):
+
+```dotenv
+MCP_DATABASE_URL=postgresql://<user>:<password>@localhost:5432/python_backend
+```
+
+Replace the placeholders with the real PostgreSQL credentials. URL-encode
+special characters in the username or password. Do not commit `.env` or send
+the connection URL to the coding agent.
+
+The workspace MCP configuration in `.vscode/mcp.json` starts DBHub with
+`dbhub.toml`. The `execute_sql` tool is configured as read-only and capped at
+500 returned rows. Use a least-privilege PostgreSQL account and a development
+database; the MCP read-only setting is an additional guard, not a substitute
+for database permissions.
+
+Install Node.js 22.5 or newer if it is not already available, then restart VS
+Code. Open the Command Palette and run **MCP: List Servers**, start `postgres`,
+and trust the server only after reviewing its configuration. In Copilot Chat,
+use **Configure Tools** to enable its database tools. For example, ask the
+agent to list tables in the `public` schema or inspect the columns of `users`.

@@ -1,10 +1,11 @@
-﻿from pydantic import BaseModel
-
+﻿from sqlalchemy import text
+from pydantic import BaseModel
+from app.routers.users import router as users_router
 from app.routers import users, chat
 from models.product import Product
 # sai from ..services import product_service
 from fastapi import FastAPI
-
+from app.db.session import engine
 # Báo lỗi cannot find reference `product_service` trong `app.services` nhưng vẫn chạy được
 from services import product_service
 #-----------------------------------------------------------------------------------------------------------------------
@@ -174,8 +175,16 @@ def create_app_router() -> FastAPI:
         }
     return app
 
-# Sau này chạy
-# uvicorn app.main:app
+# uvicorn app.main:run_test_db --factory --reload
+def run_test_db() -> FastAPI:
+    app = FastAPI(title="Python Backend Learning API")
+    app.include_router(users_router)
+    @app.get("/")
+    def health_check():
+        return {"status": "ok"}
+
+    return app
+
 
 if __name__ == "__main__":
     start()

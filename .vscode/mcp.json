@@ -1,0 +1,17 @@
+// {
+//   "servers": {
+//     "postgres": {
+//       "type": "stdio",
+//       "command": "npx",
+//       "args": [
+//         "-y",
+//         "@bytebase/dbhub@latest",
+//         "--transport",
+//         "stdio",
+//         "--config",
+//         "${workspaceFolder}/dbhub.toml"
+//       ],
+//       "envFile": "${workspaceFolder}/.env"
+//     }
+//   }
+// }
