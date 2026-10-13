@@ -134,7 +134,31 @@ MCP
 cấu hình MCP hiện đã stage tham chiếu tới file này.
 ```
 
+Kiến trúc mới
+```
+Router — API layer
+HTTP, status code, request/response
+     │
+     ▼
+Service Layer
+Nghiệp vụ: quy tắc, kiểm tra, điều phối
+     │
+     ▼
+Repository Layer
+Truy vấn và thao tác dữ liệu qua SQLAlchemy
+     │
+     ▼
+PostgreSQL
+```
 
+Vai trò từng lớp:
+
+Lớp | Chịu trách nhiệm | Không nên làm
+|-|-|-|
+Router | HTTP request/response | Chứa nghiệp vụ phức tạp
+Service | Quy tắc nghiệp vụ, điều phối transaction | Phụ thuộc vào chi tiết HTTP
+Repository | Truy vấn dữ liệu | Quyết định quy tắc nghiệp vụ
+Database | Lưu trữ và bảo đảm ràng buộc dữ liệu | Thay thế toàn bộ validation nghiệp vụ
 
 
 ## Alembic migrations (PowerShell)

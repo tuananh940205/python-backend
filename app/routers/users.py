@@ -46,13 +46,25 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db
 from app.models import User
 from app.schemas import UserCreate, UserRead, UserUpdate
+from app.services import user_service
+from app.services.user_service import UserNotFoundError
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
+def to_not_found(error: UserNotFoundError) -> HTTPException:
+    return HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=str(error),
+    )
 
 
 # READ: lấy danh sách user
 @router.get("/", response_model=list[UserRead])
 def get_users(db: Session = Depends(get_db)):
+    # return old_get_users(db)
+    return user_service.list_users(db)
+
+def old_get_users(db: Session):
     # select(User) tạo câu truy vấn SQLAlchemy để lấy các đố i tượng User.
     # Khi thực thi, SQLAlchemy tạo SQL tương đương:
     # SELECT id, name, email, age
@@ -65,6 +77,13 @@ def get_users(db: Session = Depends(get_db)):
 # READ: lấy một user
 @router.get("/{user_id}", response_model=UserRead)
 def get_user(user_id: int, db: Session = Depends(get_db)):
+    # return old_get_users(db, user_id)
+    try:
+        return user_service.get_user(db, user_id)
+    except UserNotFoundError as error:
+        raise to_not_found(error) from error
+
+def old_get_user(db: Session, user_id: int):
     user = db.get(User, user_id)
 
     if user is None:
@@ -88,14 +107,16 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db)):
     # db.add() đánh dấu đối tượng để lưu trong session.
     # db.commit() xác nhận transaction, ghi thay đổi vào database.
     # db.refresh() đọc lại dữ liệu từ database, chẳng hạn id vừa được sinh ra.
-    user = User(**payload.model_dump())
+    # return old_create_user(payload, db)
+    return user_service.create_user(db, payload)
 
+def old_create_user(payload: UserCreate, db: Session):
+    user = User(**payload.model_dump())
     db.add(user)
     db.commit()
     db.refresh(user)
 
     return user
-
 
 # UPDATE: cập nhật một phần dữ liệu
 @router.patch("/{user_id}", response_model=UserRead)
@@ -104,6 +125,18 @@ def update_user(
     payload: UserUpdate,
     db: Session = Depends(get_db),
 ):
+    # return old_update_user(user_id, payload, db)
+    try:
+        return user_service.update_user(db, user_id, payload)
+    except UserNotFoundError as error:
+        raise to_not_found(error) from error
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
+        ) from error
+
+def old_update_user(user_id: int, payload: UserUpdate, db: Session):
     user = db.get(User, user_id)
 
     if user is None:
@@ -127,8 +160,8 @@ def update_user(
         )
 
     if any(
-        key in changes and changes[key] is None
-        for key in ("name", "email")
+            key in changes and changes[key] is None
+            for key in ("name", "email")
     ):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -147,6 +180,15 @@ def update_user(
 # DELETE: xóa user
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(user_id: int, db: Session = Depends(get_db)):
+    # return old_delete_user(user_id, db)
+    try:
+        user_service.delete_user(db, user_id)
+    except UserNotFoundError as error:
+        raise to_not_found(error) from error
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+def old_delete_user(user_id: int, db: Session):
     user = db.get(User, user_id)
 
     if user is None:
