@@ -1,17 +1,19 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, EmailStr
 
 # giới hạn dữ liệu client được gửi khi tạo user.
 class UserCreate(BaseModel):
     name: str = Field(min_length=1, max_length=100)
-    email: str = Field(min_length=3, max_length=255)
-    age: int | None = Field(default=None, ge=0)
+    email: EmailStr
+    age: int | None = Field(default=None, ge=0, le=150)
 
 
 # cho phép cập nhật một số trường mà không bắt buộc gửi toàn bộ dữ liệu.
 class UserUpdate(BaseModel):
-    name: str | None = Field(default=None, min_length=1, max_length=100)
-    email: str | None = Field(default=None, min_length=3, max_length=255)
-    age: int | None = Field(default=None, ge=0)
+    name: str | None = Field(
+        default=None, min_length=1, max_length=100
+    )
+    email: EmailStr | None = None
+    age: int | None = Field(default=None, ge=0, le=150)
 
 
 # định nghĩa cấu trúc JSON trả về client, bao gồm id do database tạo ra.

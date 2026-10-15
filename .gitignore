@@ -4,3 +4,4 @@ __pycache__/
 .env
 .idea
 .local_prompts
+.local_summary.md

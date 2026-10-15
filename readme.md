@@ -18,6 +18,13 @@ pip install alembic sqlalchemy psycopg
 alembic init migrations
 ```
 
+Cài thư viện kiểm tra email
+```bash
+pip install email-validator
+```
+
+***
+
 Lộ trình
 
 ```
