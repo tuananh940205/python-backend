@@ -47,7 +47,7 @@ from app.dependencies import get_db
 from app.models import User
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.services import user_service
-from app.services.user_service import UserNotFoundError
+from app.services.user_service import UserNotFoundError, DuplicateUserDataError
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -56,7 +56,6 @@ def to_not_found(error: UserNotFoundError) -> HTTPException:
         status_code=status.HTTP_404_NOT_FOUND,
         detail=str(error),
     )
-
 
 # READ: lấy danh sách user
 @router.get("/", response_model=list[UserRead])
@@ -94,7 +93,6 @@ def old_get_user(db: Session, user_id: int):
 
     return user
 
-
 # CREATE: tạo user
 @router.post(
     "/",
@@ -102,13 +100,14 @@ def old_get_user(db: Session, user_id: int):
     status_code=status.HTTP_201_CREATED,
 )
 def create_user(payload: UserCreate, db: Session = Depends(get_db)):
-    # model_dump() chuyển Pydantic object thành dictionary.
-    # User(**...) truyền các trường dictionary vào constructor.
-    # db.add() đánh dấu đối tượng để lưu trong session.
-    # db.commit() xác nhận transaction, ghi thay đổi vào database.
-    # db.refresh() đọc lại dữ liệu từ database, chẳng hạn id vừa được sinh ra.
     # return old_create_user(payload, db)
-    return user_service.create_user(db, payload)
+    try:
+        return user_service.create_user(db, payload)
+    except DuplicateUserDataError as error:
+        raise HTTPException(
+            status_code=status.http_409_CONFLICT,
+            detail=str(error),
+        ) from error
 
 def old_create_user(payload: UserCreate, db: Session):
     user = User(**payload.model_dump())
@@ -137,6 +136,11 @@ def update_user(
         ) from error
 
 def old_update_user(user_id: int, payload: UserUpdate, db: Session):
+    # model_dump() chuyển Pydantic object thành dictionary.
+    # User(**...) truyền các trường dictionary vào constructor.
+    # db.add() đánh dấu đối tượng để lưu trong session.
+    # db.commit() xác nhận transaction, ghi thay đổi vào database.
+    # db.refresh() đọc lại dữ liệu từ database, chẳng hạn id vừa được sinh ra.
     user = db.get(User, user_id)
 
     if user is None:

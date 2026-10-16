@@ -4,11 +4,15 @@ from app.models import User
 from app.repositories import user_repository
 from app.schemas import UserUpdate
 from app.schemas.user import UserCreate, UserResponse
+from sqlalchemy.exc import IntegrityError
 
 # UserNotFoundError là lỗi nghiệp vụ do ứng dụng định nghĩa.
 # Service không cần import HTTPException của FastAPI.
 # Nhờ đó, bạn có thể tái sử dụng service trong script, tác vụ nền hoặc các giao diện khác.
 class UserNotFoundError(Exception):
+    pass
+
+class DuplicateUserDataError(Exception):
     pass
 
 def list_users(db: Session) -> list[User]:
@@ -31,6 +35,12 @@ def create_user(db: Session, payload: UserCreate) -> User:
         db.commit()
         db.refresh(user)
         return user
+    # Vi phạm ràng buộc của database
+    except IntegrityError as error:
+        db.rollback()
+        raise DuplicateUserDataError(
+            "User data violates a database constraint"
+        ) from error
     except Exception:
         # Khi có lỗi trong quá trình ghi dữ liệu, db.rollback() hoàn tác những thay đổi chưa commit của transaction đó.
         db.rollback()

@@ -13,7 +13,7 @@ Activate trên window
 ```
 
 Cài sqlAchemy
-```
+```sh
 pip install alembic sqlalchemy psycopg
 alembic init migrations
 ```
@@ -23,6 +23,15 @@ Cài thư viện kiểm tra email
 pip install email-validator
 ```
 
+Cài pytest
+```bash
+pip install pytest
+```
+
+Chạy test
+```shell
+python -m pytest -v
+```
 ***
 
 Lộ trình
