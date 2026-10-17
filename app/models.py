@@ -15,6 +15,8 @@ class User(Base):
     name: Mapped[str] = mapped_column(
         String(100),
         nullable=False,
+        # Tạo ràng buộc duy nhất
+        unique=True,
     )
 
     email: Mapped[str] = mapped_column(
@@ -24,6 +26,11 @@ class User(Base):
 
     age: Mapped[int | None] = mapped_column(
         Integer,
+        nullable=True,
+    )
+
+    password_hash: Mapped[str | None] = mapped_column(
+        String,
         nullable=True,
     )
 

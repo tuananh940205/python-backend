@@ -8,6 +8,8 @@ from fastapi import FastAPI
 from app.db.session import engine
 # Báo lỗi cannot find reference `product_service` trong `app.services` nhưng vẫn chạy được
 from services import product_service
+from app.routers.auth import router as auth_router
+from app.routers.me import router as me_router
 #-----------------------------------------------------------------------------------------------------------------------
 # Python chạy Uvicorn sẽ tìm module từ thư mục gốc của project, không phải thư mục hiện tại.
 # Vì vậy, nếu bạn chạy lệnh `uvicorn app.main:app`, Python sẽ tìm module `services` trong thư mục gốc của project,
@@ -178,7 +180,10 @@ def create_app_router() -> FastAPI:
 # uvicorn app.main:run_test_db --factory --reload
 def run_test_db() -> FastAPI:
     app = FastAPI(title="Python Backend Learning API")
+    app.include_router(me_router)
     app.include_router(users_router)
+    app.include_router(auth_router)
+
     @app.get("/")
     def health_check():
         return {"status": "ok"}

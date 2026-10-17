@@ -32,6 +32,18 @@ Chạy test
 ```shell
 python -m pytest -v
 ```
+
+Cài thư viện bảo mật
+```powershell
+pip install "pwdlib[argon2]" PyJWT python-multipart
+```
+
+Tạo secret ngẫu nhiên trong Powershell:
+```powershell
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+
 ***
 
 Lộ trình

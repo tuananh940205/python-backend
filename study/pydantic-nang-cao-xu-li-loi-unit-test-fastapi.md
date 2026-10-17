@@ -1,4 +1,6 @@
-# Pydantic nâng cao, xử lý lỗi và Unit Test trong FastAPI
+<p align="center" style="font-size: 30px">
+    <b>Pydantic nâng cao, xử lý lỗi và Unit Test trong FastAPI</b>
+</p>
 
 ## 1. Pydantic: Validation dữ liệu đầu vào
 Cài đặt thư viện kiểm tra email
