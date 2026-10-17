@@ -1,9 +1,13 @@
 ﻿import os
-from datetime import datetime, timedelta, timezone
-
 import jwt
+import hashlib
+import secrets
+
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from pwdlib import PasswordHash
+
+REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 load_dotenv()
 
@@ -33,3 +37,16 @@ def create_access_token(user_id: int) -> str:
     }
 
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+def create_refresh_token() -> str:
+    """Tạo token ngẫu nhiên, khó đoán."""
+    return secrets.token_urlsafe(64)
+
+def hash_refresh_token(token: str) -> str:
+    """Chỉ lưu mã băm của refresh token trong database."""
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+def refresh_token_expiry() -> datetime:
+    return datetime.now(timezone.utc) + timedelta(
+        days=REFRESH_TOKEN_EXPIRE_DAYS
+    )
