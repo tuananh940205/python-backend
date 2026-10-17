@@ -45,7 +45,7 @@ class UserRead(BaseModel):
     name: str
     email: str
     age: int | None
-
+    role: str
 
 # ConfigDict(from_attributes=True) cho phép Pydantic đọc giá trị từ thuộc tính của đối tượng SQLAlchemy.
 # Lưu ý: age không có giá trị mặc định trong UserRead, nên trường này phải tồn tại trong đối tượng trả về, dù giá trị có thể là None.

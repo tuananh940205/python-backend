@@ -34,6 +34,13 @@ class User(Base):
         nullable=True,
     )
 
+    role: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False,
+        default="user",
+        server_default="user",
+    )
+
 # user = User(
 #     name="An",
 #     email="an@example.com",

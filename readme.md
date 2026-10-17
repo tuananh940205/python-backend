@@ -19,17 +19,17 @@ alembic init migrations
 ```
 
 Cài thư viện kiểm tra email
-```bash
+```powershell
 pip install email-validator
 ```
 
 Cài pytest
-```bash
+```powershell
 pip install pytest
 ```
 
 Chạy test
-```shell
+```powershell
 python -m pytest -v
 ```
 
@@ -43,6 +43,10 @@ Tạo secret ngẫu nhiên trong Powershell:
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
+Cài thư viện test RBAC
+```powershell
+pip install httpx
+```
 
 ***
 
