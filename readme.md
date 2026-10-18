@@ -52,6 +52,13 @@ Cài pydantic email
 pip install 'pydantic[email]'
 ```
 
+Cài đặt alembic
+```
+cd D:\projects\python\python-backend
+.venv\Scripts\Activate.ps1
+python -m pip install alembic
+```
+
 Docker cài dependency từ `requirements.txt`, không dùng thư viện đã cài trong `.venv`.  
 Sau khi thêm dependency vào `requirements.txt`, build lại image và truyền `.env.docker` cho mọi lệnh Compose:
 ```powershell
