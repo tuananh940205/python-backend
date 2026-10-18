@@ -6,9 +6,8 @@ Chạy project bằng
 if __name__ == "__main__":
 ```
 
-
 Activate trên window
-```sh
+```powershell
 .venv\Scripts\activate
 ```
 
@@ -46,6 +45,18 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
 Cài thư viện test RBAC
 ```powershell
 pip install httpx
+```
+
+Cài pydantic email
+```powershell
+pip install 'pydantic[email]'
+```
+
+Docker cài dependency từ `requirements.txt`, không dùng thư viện đã cài trong `.venv`.  
+Sau khi thêm dependency vào `requirements.txt`, build lại image và truyền `.env.docker` cho mọi lệnh Compose:
+```powershell
+docker compose --env-file .env.docker up --build -d
+docker compose --env-file .env.docker logs -f api
 ```
 
 ***

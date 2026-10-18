@@ -5,3 +5,5 @@ __pycache__/
 .idea
 .local_prompts
 .local_summary.md
+.env.*
+!.env.example
