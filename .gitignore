@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 .env
 .idea
+.local_prompts
+.local_summary.md
+.env.*
+!.env.example

@@ -1,0 +1,9 @@
+[[sources]]
+id = "local"
+dsn = "${MCP_DATABASE_URL}"
+
+[[tools]]
+name = "execute_sql"
+source = "local"
+readonly = true
+max_rows = 500
