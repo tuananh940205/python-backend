@@ -1,6 +1,8 @@
 services:
   db:
+    # Giữ nguyên cấu hình PostgreSQL hiện tại
     image: postgres:16
+    # Giữ các cấu hình environment, volume và healthcheck hiện có
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -18,7 +20,20 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   api:
+    # Giữ cấu hình API hiện tại
     build: .
     restart: unless-stopped
     env_file:
@@ -28,6 +43,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:
+  redis_data:

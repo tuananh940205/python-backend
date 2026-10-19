@@ -1,10 +1,11 @@
 ﻿from sqlalchemy.orm import Session
-
+from redis.exceptions import RedisError
 from app.models import User
 from app.repositories import user_repository
 from app.schemas import UserUpdate
 from app.schemas.user import UserCreate, UserResponse
 from sqlalchemy.exc import IntegrityError
+from app.cache import delete_cache
 
 # UserNotFoundError là lỗi nghiệp vụ do ứng dụng định nghĩa.
 # Service không cần import HTTPException của FastAPI.
@@ -64,8 +65,13 @@ def update_user(db: Session, user_id: int, payload: UserUpdate) -> User:
         for field, value in changes.items():
             setattr(user, field, value)
 
+        # Sau khi cập nhật user và transaction đã commit thành công:
         db.commit()
         db.refresh(user)
+        try:
+            delete_user(f"user:{user_id}")
+        except RedisError:
+            pass
         return user
     except Exception:
         db.rollback()

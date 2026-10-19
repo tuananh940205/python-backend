@@ -11,6 +11,7 @@ from services import product_service
 from app.routers.auth import router as auth_router
 from app.routers.me import router as me_router
 from app.routers.admin import router as admin_router
+from app.routers.notifications import router as notifications_router
 #-----------------------------------------------------------------------------------------------------------------------
 # Python chạy Uvicorn sẽ tìm module từ thư mục gốc của project, không phải thư mục hiện tại.
 # Vì vậy, nếu bạn chạy lệnh `uvicorn app.main:app`, Python sẽ tìm module `services` trong thư mục gốc của project,
@@ -185,6 +186,7 @@ def run_test_db() -> FastAPI:
     app.include_router(users_router)
     app.include_router(auth_router)
     app.include_router(admin_router)
+    app.include_router(notifications_router)
 
     @app.get("/")
     def health_check():
@@ -193,7 +195,6 @@ def run_test_db() -> FastAPI:
     return app
 
 app = run_test_db()
-
 
 if __name__ == "__main__":
     start()

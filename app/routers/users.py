@@ -48,7 +48,7 @@ from app.models import User
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.services import user_service
 from app.services.user_service import UserNotFoundError, DuplicateUserDataError
-
+from app.cache import get_cached_json, set_cached_json
 router = APIRouter(prefix="/users", tags=["Users"])
 
 def to_not_found(error: UserNotFoundError) -> HTTPException:
@@ -77,10 +77,33 @@ def old_get_users(db: Session):
 @router.get("/{user_id}", response_model=UserRead)
 def get_user(user_id: int, db: Session = Depends(get_db)):
     # return old_get_users(db, user_id)
+    # return old_get_user_2(user_id, db)
+    cache_key = f"user:{user_id}"
+
     try:
-        return user_service.get_user(db, user_id)
-    except UserNotFoundError as error:
-        raise to_not_found(error) from error
+        cached = get_cached_json(cache_key)
+    except (ValueError, TypeError):
+        cached = None
+
+    if cached is not None:
+        return cached
+
+    user = db.get(User, user_id)
+
+    if user is None:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found",
+        )
+
+    result = UserRead.model_validate(user).model_dump(mode="json")
+
+    try:
+        set_cached_json(cache_key, result, ttl_seconds=60)
+    except (TypeError, ValueError):
+        pass
+
+    return result
 
 def old_get_user(db: Session, user_id: int):
     user = db.get(User, user_id)
@@ -205,3 +228,9 @@ def old_delete_user(user_id: int, db: Session):
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+def old_get_user_2(user_id: int, db: Session):
+    try:
+        return user_service.get_user(db, user_id)
+    except UserNotFoundError as error:
+        raise to_not_found(error) from error

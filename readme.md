@@ -59,6 +59,18 @@ cd D:\projects\python\python-backend
 python -m pip install alembic
 ```
 
+Cài thư viện Redis cho Python:
+```
+.venv\Scripts\Activate.ps1
+python -m pip install redis
+```
+
+[Cài requirement]  
+Lệnh in ra requirement cho module
+```
+pip freeze > requirements.txt
+```
+
 Docker cài dependency từ `requirements.txt`, không dùng thư viện đã cài trong `.venv`.  
 Sau khi thêm dependency vào `requirements.txt`, build lại image và truyền `.env.docker` cho mọi lệnh Compose:
 ```powershell
